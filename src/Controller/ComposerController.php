@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -48,7 +49,7 @@ class ComposerController extends AbstractController
     public function update(Composer $composer, SerializerInterface $serializer, ComposerRepository $composerRepository, ValidatorInterface $validator, Request $request): JsonResponse
     {
         $composer = $serializer->deserialize($request->getContent(), Composer::class, 'json', [
-            'object_to_populate' => $composer
+            AbstractNormalizer::OBJECT_TO_POPULATE => $composer
         ]);
 
         $errors = $validator->validate($composer);
