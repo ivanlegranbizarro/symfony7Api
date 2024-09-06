@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/api')]
 class ComposerController extends AbstractController
 {
-    #[Route('/composers', name: 'app_composers_index')]
+    #[Route('/composers', name: 'app_composers_index', methods: ['GET'])]
     public function index(ComposerRepository $composerRepository): JsonResponse
     {
         $composers = $composerRepository->findAll();
@@ -25,14 +25,14 @@ class ComposerController extends AbstractController
         return $this->json($composers);
     }
 
-    #[Route('/composers/{id}', name: 'app_composers_show')]
+    #[Route('/composers/{id}', name: 'app_composers_show', methods: ['GET'])]
     public function show(Composer $composer): JsonResponse
     {
 
         return $this->json($composer);
     }
 
-    #[Route('/composers/create', name: 'app_composers_create')]
+    #[Route('/composers/create', name: 'app_composers_create', methods: ['POST'])]
     public function create(SerializerInterface $serializer, ComposerRepository $composerRepository, ValidatorInterface $validator, Request $request): JsonResponse
     {
         $composer = $serializer->deserialize($request->getContent(), Composer::class, 'json');
@@ -48,7 +48,7 @@ class ComposerController extends AbstractController
         return $this->json($composer, 201);
     }
 
-    #[Route('/composers/{id}/update', name: 'app_composers_update')]
+    #[Route('/composers/{id}/update', name: 'app_composers_update', methods: ['PUT'])]
     public function update(Composer $composer, SerializerInterface $serializer, ComposerRepository $composerRepository, ValidatorInterface $validator, Request $request): JsonResponse
     {
         $composer = $serializer->deserialize($request->getContent(), Composer::class, 'json', [
@@ -66,7 +66,7 @@ class ComposerController extends AbstractController
         return $this->json($composer, 200);
     }
 
-    #[Route('/composers/{id}/delete', name: 'app_composers_delete')]
+    #[Route('/composers/{id}/delete', name: 'app_composers_delete', methods: ['DELETE'])]
     public function delete(Composer $composer, ComposerRepository $composerRepository): JsonResponse
     {
         $composerRepository->remove($composer, true);

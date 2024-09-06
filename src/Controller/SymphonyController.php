@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/api')]
 class SymphonyController extends AbstractController
 {
-    #[Route('/symphonies', name: 'app_symphonies_index')]
+    #[Route('/symphonies', name: 'app_symphonies_index', methods: ['GET'])]
     public function index(SymphonyRepository $symphonyRepository): JsonResponse
     {
         $symphonies = $symphonyRepository->findAll();
@@ -25,13 +25,13 @@ class SymphonyController extends AbstractController
         return $this->json($symphonies);
     }
 
-    #[Route('/symphonies/{id}', name: 'app_symphonies_show')]
+    #[Route('/symphonies/{id}', name: 'app_symphonies_show', methods: ['GET'])]
     public function show(Symphony $symphony): JsonResponse
     {
         return $this->json($symphony);
     }
 
-    #[Route('/symphonies/create', name: 'app_symphonies_create')]
+    #[Route('/symphonies/create', name: 'app_symphonies_create', methods: ['POST'])]
     public function create(SerializerInterface $serializer, SymphonyRepository $symphonyRepository, ValidatorInterface $validator, Request $request): JsonResponse
     {
         $symphony = $serializer->deserialize($request->getContent(), Symphony::class, 'json');
@@ -47,7 +47,7 @@ class SymphonyController extends AbstractController
         return $this->json($symphony, 201);
     }
 
-    #[Route('/symphonies/{id}/update', name: 'app_symphonies_update')]
+    #[Route('/symphonies/{id}/update', name: 'app_symphonies_update', methods: ['PUT'])]
     public function update(Symphony $symphony, SerializerInterface $serializer, SymphonyRepository $symphonyRepository, ValidatorInterface $validator, Request $request): JsonResponse
     {
         $symphony = $serializer->deserialize($request->getContent(), Symphony::class, 'json', [
@@ -65,7 +65,7 @@ class SymphonyController extends AbstractController
         return $this->json($symphony, 200);
     }
 
-    #[Route('/symphonies/{id}/delete', name: 'app_symphonies_delete')]
+    #[Route('/symphonies/{id}/delete', name: 'app_symphonies_delete', methods: ['DELETE'])]
     public function delete(Symphony $symphony, SymphonyRepository $symphonyRepository): JsonResponse
     {
         $symphonyRepository->remove($symphony, true);
