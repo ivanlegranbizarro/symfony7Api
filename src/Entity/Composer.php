@@ -8,43 +8,48 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
-
 #[ORM\Entity(repositoryClass: ComposerRepository::class)]
-#[UniqueEntity('firstName', 'lastName', 'dateOfBirth', 'countryCode')]
+#[UniqueEntity(fields: ['firstName', 'lastName', 'dateOfBirth', 'countryCode'])]
 class Composer
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 255)]
+    #[Groups(['read', 'create', 'update'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 255)]
+    #[Groups(['read', 'create', 'update'])]
     private ?string $lastName = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     #[Assert\NotBlank]
     #[Assert\Date]
+    #[Groups(['read', 'create', 'update'])]
     private ?\DateTimeImmutable $dateOfBirth = null;
 
     #[ORM\Column(length: 2)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 2)]
+    #[Groups(['read', 'create', 'update'])]
     private ?string $countryCode = null;
 
     /**
      * @var Collection<int, Symphony>
      */
     #[ORM\OneToMany(targetEntity: Symphony::class, mappedBy: 'composer', orphanRemoval: true)]
+    #[Groups(['read', 'create', 'update'])]
     private Collection $symphonies;
 
     public function __construct()

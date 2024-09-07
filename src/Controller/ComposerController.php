@@ -29,11 +29,11 @@ class ComposerController extends AbstractController
         )
     )]
     #[Route('/composers', name: 'app_composers_index', methods: ['GET'])]
-    public function index(ComposerRepository $composerRepository): JsonResponse
+    public function index(ComposerRepository $composerRepository, SerializerInterface $serializer): JsonResponse
     {
         $composers = $composerRepository->findAll();
 
-        return $this->json($composers);
+        return $this->json($serializer->normalize($composers, null, ['groups' => 'read']));
     }
 
     #[OA\RequestBody(
@@ -57,7 +57,7 @@ class ComposerController extends AbstractController
     #[Route('/composers/create', name: 'app_composers_create', methods: ['POST'])]
     public function create(SerializerInterface $serializer, ComposerRepository $composerRepository, ValidatorInterface $validator, Request $request): JsonResponse
     {
-        $composer = $serializer->deserialize($request->getContent(), Composer::class, 'json');
+        $composer = $serializer->deserialize($request->getContent(), Composer::class, 'json', ['groups' => 'create']);
 
         $errors = $validator->validate($composer);
 
@@ -67,7 +67,7 @@ class ComposerController extends AbstractController
 
         $composerRepository->save($composer, true);
 
-        return $this->json($composer, 201);
+        return $this->json($composer, 201, [], ['groups' => 'read']);
     }
 
     #[OA\RequestBody(
@@ -92,7 +92,8 @@ class ComposerController extends AbstractController
     public function update(Composer $composer, SerializerInterface $serializer, ComposerRepository $composerRepository, ValidatorInterface $validator, Request $request): JsonResponse
     {
         $composer = $serializer->deserialize($request->getContent(), Composer::class, 'json', [
-            AbstractNormalizer::OBJECT_TO_POPULATE => $composer
+            AbstractNormalizer::OBJECT_TO_POPULATE => $composer,
+            'groups' => 'update'
         ]);
 
         $errors = $validator->validate($composer);
@@ -103,7 +104,7 @@ class ComposerController extends AbstractController
 
         $composerRepository->save($composer, true);
 
-        return $this->json($composer, 200);
+        return $this->json($composer, 200, [], ['groups' => 'read']);
     }
 
     #[OA\Response(

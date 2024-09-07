@@ -23,34 +23,41 @@ class SymphonyController extends AbstractController
     #[OA\Response(
         response: 200,
         description: 'Get all symphonies',
-        content: new OA\JsonContent(type: 'array', items: new OA\Items(ref: new Model(type: Symphony::class)))
+        content: new OA\JsonContent(
+            type: 'array',
+            items: new OA\Items(ref: new Model(type: Symphony::class, groups: ['read']))
+        )
     )]
     #[Route('/symphonies', name: 'app_symphonies_index', methods: ['GET'])]
     public function index(SymphonyRepository $symphonyRepository): JsonResponse
     {
         $symphonies = $symphonyRepository->findAll();
-        return $this->json($symphonies);
+        return $this->json($symphonies, 200, [], ['groups' => ['read']]);
     }
 
     #[OA\Response(
         response: 200,
         description: 'Get one symphony',
-        content: new OA\JsonContent(ref: new Model(type: Symphony::class))
+        content: new OA\JsonContent(ref: new Model(type: Symphony::class, groups: ['read']))
     )]
     #[Route('/symphonies/{id}', name: 'app_symphonies_show', methods: ['GET'])]
     public function show(Symphony $symphony): JsonResponse
     {
-        return $this->json($symphony);
+        return $this->json($symphony, 200, [], ['groups' => ['read']]);
     }
 
     #[OA\RequestBody(
         description: 'Create a new symphony',
-        content: new OA\JsonContent(ref: new Model(type: Symphony::class))
+        content: new OA\JsonContent(
+            ref: new Model(type: Symphony::class, groups: ['create'])
+        )
     )]
     #[OA\Response(
         response: 201,
         description: 'Create a new symphony',
-        content: new OA\JsonContent(ref: new Model(type: Symphony::class))
+        content: new OA\JsonContent(
+            ref: new Model(type: Symphony::class, groups: ['read'])
+        )
     )]
     #[OA\Response(
         response: 400,
@@ -68,17 +75,21 @@ class SymphonyController extends AbstractController
         }
 
         $symphonyRepository->save($symphony, true);
-        return $this->json($symphony, 201);
+        return $this->json($symphony, 201, [], ['groups' => ['read']]);
     }
 
     #[OA\RequestBody(
         description: 'Update a symphony',
-        content: new OA\JsonContent(ref: new Model(type: Symphony::class))
+        content: new OA\JsonContent(
+            ref: new Model(type: Symphony::class, groups: ['update'])
+        )
     )]
     #[OA\Response(
         response: 200,
         description: 'Update a symphony',
-        content: new OA\JsonContent(ref: new Model(type: Symphony::class))
+        content: new OA\JsonContent(
+            ref: new Model(type: Symphony::class, groups: ['read'])
+        )
     )]
     #[OA\Response(
         response: 400,
@@ -98,7 +109,7 @@ class SymphonyController extends AbstractController
         }
 
         $symphonyRepository->save($symphony, true);
-        return $this->json($symphony, 200);
+        return $this->json($symphony, 200, [], ['groups' => ['read']]);
     }
 
     #[OA\Response(
