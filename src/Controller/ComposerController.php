@@ -33,7 +33,7 @@ class ComposerController extends AbstractController
     {
         $composers = $composerRepository->findAll();
 
-        return $this->json($serializer->normalize($composers, null, ['groups' => 'read']));
+        return $this->json($composers, 200, [], ['groups' => 'read']);
     }
 
     #[OA\RequestBody(
