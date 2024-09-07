@@ -29,7 +29,7 @@ class ComposerController extends AbstractController
         )
     )]
     #[Route('/composers', name: 'app_composers_index', methods: ['GET'])]
-    public function index(ComposerRepository $composerRepository, SerializerInterface $serializer): JsonResponse
+    public function index(ComposerRepository $composerRepository): JsonResponse
     {
         $composers = $composerRepository->findAll();
 
